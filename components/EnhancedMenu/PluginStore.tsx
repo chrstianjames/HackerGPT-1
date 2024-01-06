@@ -278,7 +278,7 @@ function PluginStoreModal({
                       ) : (
                         <div className="col-span-full flex flex-col items-center justify-center p-10">
                           <p className="text-lg font-semibold text-white">
-                            No plugins found for "{searchTerm}"
+                            No plugins found for &quot;{searchTerm}&quot;
                           </p>
                           <p className="mt-2 text-sm text-gray-400">
                             Try a different query or category.
