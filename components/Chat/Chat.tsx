@@ -51,7 +51,6 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
       conversations,
       models,
       apiKey,
-      pluginKeys,
       serverSideApiKeyIsSet,
       messageIsStreaming,
       modelError,
@@ -291,7 +290,6 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
     [
       apiKey,
       conversations,
-      pluginKeys,
       selectedConversation,
       stopConversationRef,
       selectedToolId,
