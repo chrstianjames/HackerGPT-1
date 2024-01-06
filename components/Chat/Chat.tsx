@@ -421,7 +421,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                     <>
                       {'HackerGPT'}
                       {isPremium && (
-                        <span className="rounded-md bg-yellow-200 px-1.5 py-0.5 text-xs uppercase text-yellow-900 md:text-sm">
+                        <span className="rounded-md bg-yellow-200 px-1.5 py-0.5 text-xs uppercase text-yellow-700 md:text-sm">
                           Plus
                         </span>
                       )}
