@@ -420,9 +420,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                         <HackerGPTSVG scale={0.25} />
                       </div>
                       <div className="hidden sm:block">
-                        <HackerGPTSVG scale={0.5} />
+                        <HackerGPTSVG scale={0.45} />
                       </div>
-                      <div className="hidden text-4xl font-semibold text-[#0a0a0a] sm:block dark:text-[#fafafa]">
+                      <div className="hidden text-3xl font-semibold text-[#0a0a0a] sm:block dark:text-[#fafafa]">
                         HackerGPT
                       </div>
                     </div>
