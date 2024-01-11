@@ -417,7 +417,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                   ) : (
                     <div className="flex flex-col items-center justify-center gap-4 text-center">
                       <div className="sm:hidden">
-                        <HackerGPTSVG scale={0.2} />
+                        <HackerGPTSVG scale={0.25} />
                       </div>
                       <div className="hidden sm:block">
                         <HackerGPTSVG scale={0.5} />
