@@ -187,6 +187,17 @@ function PluginStoreModal({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const [noPluginsMessage, setNoPluginsMessage] = useState('');
+
+  // Update this state whenever the selectedCategory or searchTerm changes
+  useEffect(() => {
+    if (selectedCategory === 'Installed' && searchTerm === '') {
+      setNoPluginsMessage('No plugins installed');
+    } else {
+      setNoPluginsMessage(`No plugins found for "${searchTerm}"`);
+    }
+  }, [selectedCategory, searchTerm]);
+
   const excludedPluginIds = [0, 99];
 
   const filteredPlugins = pluginsData
@@ -402,11 +413,13 @@ function PluginStoreModal({
                       ) : (
                         <div className="col-span-full flex flex-col items-center justify-center p-10">
                           <p className="text-lg font-semibold text-white">
-                            No plugins found for &quot;{searchTerm}&quot;
+                            {noPluginsMessage}
                           </p>
-                          <p className="mt-2 text-sm text-gray-400">
-                            Try a different query or category.
-                          </p>
+                          {selectedCategory !== 'Installed' && (
+                            <p className="mt-2 text-sm text-gray-400">
+                              Try a different query or category.
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
