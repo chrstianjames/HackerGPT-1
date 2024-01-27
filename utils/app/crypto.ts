@@ -28,14 +28,16 @@ export const getCryptoPaymentStatus = async (token: string) => {
       if (data.status === 'expired') {
         status += ` It expired on ${data.ends_at.split('T')[0]}`;
       } else {
-        status += ` Your subscription will end on ${
-          data.ends_at.split('T')[0]
-        }`;
+        if (data.status !== 'confirmation-pending') {
+          status += ` Your subscription will end on ${
+            data.ends_at.split('T')[0]
+          }`;
+        }
       }
     }
 
     return status;
   } else {
-    return data;
+    return JSON.stringify(data);
   }
 };

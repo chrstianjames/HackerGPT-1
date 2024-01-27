@@ -29,6 +29,7 @@ import { useRouter } from 'next/navigation';
 
 import { ApiKey } from '@/types/api';
 import { ClipLoader } from 'react-spinners';
+import { getCryptoPaymentStatus } from '@/utils/app/crypto';
 
 interface Props {
   open: boolean;
@@ -49,6 +50,10 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
   const [preFetchedPortalUrl, setPreFetchedPortalUrl] = useState<string | null>(
     null,
   );
+  const [cryptoPaymentStatus, setCryptoPaymentStatus] = useState<string | null>(
+    null,
+  );
+
   const app = initFirebaseApp();
   const auth = getAuth(app);
 
@@ -82,6 +87,8 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
 
   const [revokeErrorMessage, setRevokeErrorMessage] = useState('');
   const [isRevokeButtonDisabled, setIsRevokeButtonDisabled] = useState(false);
+
+  const [token, setToken] = useState<string | null>(null);
 
   const handleCreateNewKey = async () => {
     if (!auth.currentUser) {
@@ -257,6 +264,9 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
       }
     };
 
+    getToken();
+    getStatus();
+
     fetchKeysIfPremium();
   }, [selectedTab, isPremium]);
 
@@ -281,8 +291,28 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
     }
   };
 
+  const getToken = async () => {
+    if (auth.currentUser) {
+      try {
+        setToken(await auth.currentUser.getIdToken(true));
+      } catch (error) {
+        return null;
+      }
+    }
+  };
+
+  const getStatus = async () => {
+    if (token) {
+      const status = await getCryptoPaymentStatus(token);
+      console.log(status);
+      setCryptoPaymentStatus(status);
+    }
+  };
+
   useEffect(() => {
     checkPremiumAndPortal();
+    getToken();
+    getStatus();
   }, [app, auth.currentUser?.uid, isUserLoggedIn]);
 
   const manageSubscription = () => {
@@ -367,7 +397,7 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
           {/* Modal dialog container */}
           <div
             ref={modalRef}
-            className="inline-block max-h-[500px] max-h-[80%] w-11/12 transform overflow-y-auto rounded-lg border border-gray-300 bg-white pb-4 pt-5 text-left align-bottom shadow-xl transition-all dark:border-neutral-400 dark:bg-hgpt-dark-gray sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-3xl sm:p-2 sm:align-middle"
+            className="inline-block max-h-[80%] w-11/12 transform overflow-y-auto rounded-lg border border-gray-300 bg-white pb-4 pt-5 text-left align-bottom shadow-xl transition-all dark:border-neutral-400 dark:bg-hgpt-dark-gray sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-3xl sm:p-2 sm:align-middle"
             role="dialog"
           >
             {/* Close button */}
@@ -385,10 +415,7 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
             <div className="flex flex-col sm:flex-col">
               {/* Sidebar with tabs */}
               <div>
-                <nav
-                  className="flex justify-start justify-center"
-                  aria-label="Sidebar"
-                >
+                <nav className="flex justify-center" aria-label="Sidebar">
                   {tabs.map((tab) => {
                     // Only show the tab if it is not protected, or if it is protected and the user is a premium, logged-in user
                     if (
@@ -447,7 +474,7 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
                         </option>
                       </select>
                     </div>
-                    {isPremium && isUserLoggedIn && (
+                    {isPremium && isUserLoggedIn && !cryptoPaymentStatus && (
                       <button
                         type="button"
                         className="mt-6 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-black shadow hover:bg-hgpt-hover-white dark:bg-hgpt-dark-gray dark:text-white dark:hover:bg-hgpt-medium-gray"
@@ -456,6 +483,12 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
                         <span>Manage Subscription</span>
                       </button>
                     )}
+                    {cryptoPaymentStatus && isUserLoggedIn ? (
+                      <div className="mt-5">
+                        <b className="font-bold">Subscription: </b>{' '}
+                        <span>{cryptoPaymentStatus}</span>
+                      </div>
+                    ) : null}
                     {isUserLoggedIn ? (
                       <>
                         <button
@@ -500,7 +533,7 @@ export const SettingDialog: FC<Props> = ({ open, onClose }) => {
                           <div className="flex justify-center py-4">
                             <ClipLoader size={30} color="white" />
                           </div>
-                        ) : userApiKeys.length > 0 ? (
+                        ) : userApiKeys?.length > 0 ? (
                           <div className="mb-4 overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200 text-center">
                               <thead className="bg-white dark:bg-hgpt-dark-gray">
