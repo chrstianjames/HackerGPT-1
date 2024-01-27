@@ -149,7 +149,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     let userStatusOk = true;
 
-    if (!skipFirebaseStatusCheck) {
+    if (!skipFirebaseStatusCheck) {      
       const response = await fetch(
         `${process.env.SECRET_CHECK_USER_STATUS_FIREBASE_FUNCTION_URL}`,
         {
